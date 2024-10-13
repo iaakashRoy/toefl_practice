@@ -1,3 +1,5 @@
+import sounddevice as sd
+import numpy as np
 from groq import Groq
 
 class SpeakingGenerator:
@@ -27,10 +29,7 @@ class SpeakingGenerator:
         3. Do you prefer taking online courses or attending in-person classes?
 
         Generate only the question text.
-
-
         """
-
 
         chat_completion = self.client.chat.completions.create(
             messages=[
@@ -83,3 +82,30 @@ class SpeakingGenerator:
         )
 
         return chat_completion.choices[0].message.content
+
+    def record_audio(file_path=None, duration=5, fs=44100):
+        """
+        Records audio from a file or the microphone.
+        If file_path is provided, reads audio from the file instead of recording live.
+        """
+        if file_path:
+            # Read pre-recorded audio file
+            print(f"Reading audio from file: {file_path}")
+            with open(file_path, 'rb') as f:
+                return f.read()  # Return the audio file contents as a buffer
+        else:
+            try:
+                # Record live audio from the microphone
+                print(f"Recording audio for {duration} seconds...")
+                recording = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='float64')
+                sd.wait()  # Wait until recording is finished
+                print("Recording finished.")
+                return recording
+            except sd.PortAudioError as e:
+                # Handle error if no audio device is available
+                print(f"Error with audio device: {e}")
+                return None
+
+# Example usage
+# speaking_gen = SpeakingGenerator()
+# audio_data = speaking_gen.record_audio(duration=5)

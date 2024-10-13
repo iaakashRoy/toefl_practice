@@ -7,15 +7,22 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install necessary system dependencies, including PortAudio
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libffi-dev \
+    libssl-dev \
+    portaudio19-dev
 
-# Make port 80 available to the world outside this container
-EXPOSE 80
+# Install pip, upgrade to the latest version
+RUN pip install --upgrade pip
 
-# Define environment variable
-ENV NAME World
-ENV GROQ_API_KEY="your_api_key"
+# Install Python dependencies from requirements.txt and sounddevice
+RUN pip install -r requirements.txt
+RUN pip install sounddevice
+
+# Expose port 8501 for Streamlit (default port)
+EXPOSE 8501
 
 # Run app.py when the container launches
 CMD ["streamlit", "run", "app.py"]
