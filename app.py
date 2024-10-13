@@ -5,9 +5,6 @@ from sections.listening import ListeningGenerator
 from sections.speaking import SpeakingGenerator
 from sections.writing import WritingGenerator
 from necessay.resources import display_timer
-import numpy as np
-from scipy.io.wavfile import write
-import io
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -39,7 +36,7 @@ if section == "Reading":
         st.session_state.reading_data = reading.create_reading_resource("Kolkata")
     
     reading_data = st.session_state.reading_data 
-    st.write(reading_data)
+    # st.write(reading_data)
 
     # Create two columns for the passage and questions, taking all space
     col1, col2 = st.columns(2)
@@ -164,9 +161,13 @@ elif section == "Speaking":
     col1, col2 = st.columns(2)
 
     # Left column: Display a sample speaking question
+    if "listening_data" not in st.session_state:
+        st.session_state.question = speaking.generate_speaking_question("student life")
+
+    question = st.session_state.question
+
     with col1:
         st.subheader("Speaking Question")
-        question = speaking.generate_speaking_question("student life")
         st.write(question)
 
     # Right column: Implement recording functionality
