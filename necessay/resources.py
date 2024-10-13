@@ -1,6 +1,5 @@
 import streamlit as st
 import time
-import sounddevice as sd
 from gtts import gTTS
 
 # Function to display the timer using HTML and JavaScript
@@ -61,28 +60,29 @@ def display_timer():
 
 
  # Function to record audio for a given duration
-def record_audio(duration, fs=44100):
-    # Create placeholders for animation and stopwatch
-    animation_placeholder = st.empty()
-    stopwatch_placeholder = st.empty()
+# def record_audio(duration, fs=44100):
+#     # Create placeholders for animation and stopwatch
+#     animation_placeholder = st.empty()
+#     stopwatch_placeholder = st.empty()
 
-    # Start the recording
-    recording = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='float64')
+#     # Start the recording
+#     recording = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='float64')
 
-    # Show a rotating animation and a stopwatch while recording
-    spinner = ["⠋", "⠙", "⠹", "⠼", "⠦", "⠧", "⠇", "⠏"]  # More complex spinner
-    start_time = time.time()  # Record the start time
+#     # Show a rotating animation and a stopwatch while recording
+#     spinner = ["⠋", "⠙", "⠹", "⠼", "⠦", "⠧", "⠇", "⠏"]  # More complex spinner
+#     start_time = time.time()  # Record the start time
 
-    for i in range(duration * 10):  # Loop for the duration of the recording
-        elapsed_time = time.time() - start_time  # Calculate elapsed time
-        minutes, seconds = divmod(int(elapsed_time), 60)  # Convert to minutes and seconds
-        animation_placeholder.write(f" {minutes:02}{spinner[i % len(spinner)]}{seconds:02}")  # Update spinner
-        time.sleep(0.1)  # Adjust the speed of the animation
+#     for i in range(duration * 10):  # Loop for the duration of the recording
+#         elapsed_time = time.time() - start_time  # Calculate elapsed time
+#         minutes, seconds = divmod(int(elapsed_time), 60)  # Convert to minutes and seconds
+#         animation_placeholder.write(f" {minutes:02}{spinner[i % len(spinner)]}{seconds:02}")  # Update spinner
+#         time.sleep(0.1)  # Adjust the speed of the animation
 
-    sd.wait()  # Wait until the recording is finished
-    animation_placeholder.empty()  # Clear the animation after recording
-    stopwatch_placeholder.empty()  # Clear the stopwatch after recording
-    return recording
+#     sd.wait()  # Wait until the recording is finished
+#     animation_placeholder.empty()  # Clear the animation after recording
+#     stopwatch_placeholder.empty()  # Clear the stopwatch after recording
+#     return recording
+
 
 def generate_listening_audio(prompt, filename='resources/audio_output.mp3'):
     # Create a gTTS object

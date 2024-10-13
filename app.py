@@ -1,9 +1,10 @@
+from audiorecorder import audiorecorder
 import streamlit as st
 from sections.reading import ReadingGenerator
 from sections.listening import ListeningGenerator
 from sections.speaking import SpeakingGenerator
 from sections.writing import WritingGenerator
-from necessay.resources import display_timer, record_audio, generate_listening_audio
+from necessay.resources import display_timer
 import numpy as np
 from scipy.io.wavfile import write
 import io
@@ -174,30 +175,31 @@ elif section == "Speaking":
         st.write("Please record your answer for 45 seconds.")
 
         # Button to start recording
-        if st.button("Start Recording"):
-            # Record for 45 seconds
-            duration = 45
-            recording = record_audio(duration)
+        # if st.button("Start Recording"):
+        #     # Record for 45 seconds
+        #     duration = 5
+            # recording = record_audio(duration)
 
-            # Convert the float64 data to int16 (WAV format requirement)
-            recording_int16 = np.int16(recording / np.max(np.abs(recording)) * 32767)
+        # Start the audio recorder
 
-            # Save to WAV buffer
-            wav_buffer = io.BytesIO()
-            write(wav_buffer, 44100, recording_int16)  # Write WAV file to buffer
-            wav_buffer.seek(0)  # Go to the beginning of the buffer
+        recording = audiorecorder("Click to record", "Click to stop recording")
 
-            # Play WAV audio in Streamlit
-            st.audio(wav_buffer, format='audio/wav')
+        if len(recording) > 0:
+            # To play audio in frontend:
+            st.audio(recording.export().read()) # Export the audio file and play it 
+
             # Generating the Transcript
-            transcript = speaking.audio_transcript(wav_buffer)
-            # Print the transcript
+            transcript = speaking.audio_transcript(recording)
+
+            # # Print the transcript
             with st.expander("Show Transcript"):
                 st.write(transcript)
-            # Evaluate the user's response based on the transcript 
-            evaluation = speaking.evaluation(question, transcript)
 
+            # # Evaluate the user's response based on the transcript 
+            evaluation = speaking.evaluation(question, transcript)
             st.write(evaluation)
+        else:
+            st.write("Please record your answer.")
 
 
 # Writing Section

@@ -1,5 +1,3 @@
-import sounddevice as sd
-import numpy as np
 from groq import Groq
 
 class SpeakingGenerator:
@@ -49,7 +47,7 @@ class SpeakingGenerator:
         :return: Transcribed text from the audio
         """
         transcription = self.client.audio.transcriptions.create(
-            file=("audio.wav", file_buffer.read()),  # Pass the buffer directly
+            file=("audio.wav", file_buffer.export().read()),  # Pass the buffer directly
             model=self.transcript_model,  # Model for transcription
             prompt=self.prompt,  # Optional prompt
             response_format=self.response_format,  # Format of the response
@@ -83,28 +81,29 @@ class SpeakingGenerator:
 
         return chat_completion.choices[0].message.content
 
-    def record_audio(file_path=None, duration=5, fs=44100):
-        """
-        Records audio from a file or the microphone.
-        If file_path is provided, reads audio from the file instead of recording live.
-        """
-        if file_path:
-            # Read pre-recorded audio file
-            print(f"Reading audio from file: {file_path}")
-            with open(file_path, 'rb') as f:
-                return f.read()  # Return the audio file contents as a buffer
-        else:
-            try:
-                # Record live audio from the microphone
-                print(f"Recording audio for {duration} seconds...")
-                recording = sd.rec(int(duration * fs), samplerate=fs, channels=1, dtype='float64')
-                sd.wait()  # Wait until recording is finished
-                print("Recording finished.")
-                return recording
-            except sd.PortAudioError as e:
-                # Handle error if no audio device is available
-                print(f"Error with audio device: {e}")
-                return None
+    # def record_audio(self, file_path=None, duration=5, fs=44100):
+    #     """
+    #     Records audio from a file or the microphone.
+    #     If file_path is provided, reads audio from the file instead of recording live.
+    #     """
+    #     if file_path:
+    #         # Read pre-recorded audio file
+    #         print(f"Reading audio from file: {file_path}")
+    #         with open(file_path, 'rb') as f:
+    #             return f.read()  # Return the audio file contents as a buffer
+    #     else:
+    #         try:
+    #             # Record live audio from the microphone
+    #             print(f"Recording audio for {duration} seconds...")
+    #             recording = audiorecorder("Click to record", "Click to stop recording")
+    #             while not recording.is_recording:
+    #                 pass  # Wait until recording is finished
+    #             print("Recording finished.")
+    #             return recording
+    #         except Exception as e:
+    #             # Handle any exception that occurs during recording
+    #             print(f"An error occurred during audio recording: {e}")
+    #             return None
 
 # Example usage
 # speaking_gen = SpeakingGenerator()
