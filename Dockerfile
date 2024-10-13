@@ -15,7 +15,7 @@ EXPOSE 80
 
 # Define environment variable
 ENV NAME World
-ENV GROQ_API_KEY="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"
+ENV GROQ_API_KEY="your_api_key"
 
 # Run app.py when the container launches
 CMD ["streamlit", "run", "app.py"]
